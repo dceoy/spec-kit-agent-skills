@@ -24,8 +24,6 @@ Use GitHub Copilot CLI from within Claude Code:
 **Prerequisites:**
 
 - GitHub Copilot subscription
-- Copilot CLI installed: `brew install copilot-cli` or `npm install -g @github/copilot`
-- Node.js v22+ and npm v10+
 
 ### Codex CLI Integration (`.claude/skills/`)
 
@@ -38,7 +36,6 @@ Use OpenAI Codex CLI from within Claude Code:
 **Prerequisites:**
 
 - ChatGPT Plus/Pro/Team/Enterprise subscription or OpenAI API key
-- Codex CLI installed: `npm install -g @openai/codex`
 
 ### Spec Kit Workflow (`.claude/skills/`)
 
@@ -112,21 +109,38 @@ Codex CLI skills are located in `.codex/skills/`:
 
 2. **Install desired CLI tools:**
 
+   For Claude Code:
+
+   ```bash
+   brew install claude-code
+   # or
+   npm install -g @anthropic/claude
+   ```
+
    For GitHub Copilot CLI:
 
    ```bash
    brew install copilot-cli
    # or
-   npm install -g @github/copilot
+   npm install -g @githubnext/github-copilot-cli
    ```
 
    For Codex CLI:
 
    ```bash
+   brew install codex
+   # or
    npm install -g @openai/codex
    ```
 
 3. **Authenticate:**
+
+   Claude Code:
+
+   ```bash
+   claude
+   # Follow authentication prompts to login with Anthropic account
+   ```
 
    GitHub Copilot CLI:
 
@@ -141,18 +155,6 @@ Codex CLI skills are located in `.codex/skills/`:
    codex
    # Follow authentication prompts
    ```
-
-## Contributing
-
-Contributions are welcome! When adding new skills:
-
-1. Follow existing naming conventions (kebab-case)
-2. Use the SKILL.md format with YAML frontmatter
-3. Document prerequisites, usage, and examples
-4. Update this README with new skills
-5. Follow commit message conventions (imperative, concise)
-
-See [AGENTS.md](AGENTS.md) for detailed guidelines.
 
 ## License
 
