@@ -2,11 +2,15 @@
 
 ## Project Structure & Module Organization
 
-- `.claude/agents/` and `.claude/commands/` contain Claude Code agent definitions and command prompts.
-- `.codex/prompts/` mirrors prompt content for Codex CLI usage.
+- `.claude/agents/` contains Claude Code agent definitions.
+- `.claude/commands/` contains Claude Code command prompts (Spec Kit commands).
+- `.claude/skills/` contains Claude Code skill definitions (copilot-_, codex-_, spec-kit-\*).
+- `.codex/prompts/` mirrors Spec Kit prompt content for Codex CLI usage.
+- `.codex/skills/` contains Codex CLI skill definitions (claude-_ and copilot-_).
 - `.github/agents/` and `.github/prompts/` hold GitHub automation agents/prompts used by workflows.
+- `.github/workflows/ci.yml` runs Claude Code review/bot workflows on PRs.
 - `.specify/` stores Spec Kit templates and memory files.
-- Root files are minimal: `README.md` (overview) and `LICENSE`.
+- Root files are minimal: `README.md` (overview), `LICENSE`, `AGENTS.md`, and `CLAUDE.md`.
 
 ## Build, Test, and Development Commands
 
