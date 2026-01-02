@@ -57,9 +57,9 @@ See **[AGENTS.md](./AGENTS.md#spec-kit-workflow)** for the complete workflow gui
 
 **Agents** (`.claude/agents/`)
 
-- `codex-ask.md`, `codex-exec.md`, `codex-review.md`, `codex-search.md` - Codex CLI agent definitions
-- `copilot-ask.md`, `copilot-exec.md`, `copilot-review.md`, `copilot-search.md` - Copilot CLI agent definitions
-- `gemini-ask.md`, `gemini-exec.md`, `gemini-review.md`, `gemini-search.md` - Gemini CLI agent definitions
+- `codex.md` - Unified Codex CLI agent (ask, exec, review, search modes)
+- `copilot.md` - Unified Copilot CLI agent (ask, exec, review, search modes)
+- `gemini.md` - Unified Gemini CLI agent (ask, exec, review, search modes)
 - See [AGENTS.md](./AGENTS.md) for agent documentation
 
 **Commands** (`.claude/commands/`)
@@ -115,10 +115,6 @@ See **[AGENTS.md](./AGENTS.md#spec-kit-workflow)** for the complete workflow gui
 │   ├── prompts/         # GitHub Copilot CLI prompts (speckit.*.prompt.md)
 │   ├── skills/          # GitHub Copilot CLI skills (symlinks to .claude and .codex)
 │   └── workflows/       # CI workflows (ci.yml)
-├── .serena/             # Serena MCP memories, cache, and project config
-│   ├── cache/
-│   ├── memories/
-│   └── project.yml
 └── .specify/            # Spec Kit templates and memory files
     ├── memory/
     ├── scripts/

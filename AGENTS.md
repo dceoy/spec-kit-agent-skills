@@ -32,12 +32,6 @@ Guidelines for editing agent definitions, skills, and prompts in this repository
 - `.specify/memory/` - Constitution and other persistent memory
 - `.specify/scripts/` - Helper scripts
 
-### Serena MCP (`.serena/`)
-
-- `.serena/memories/` - MCP memory files
-- `.serena/cache/` - MCP cache
-- `.serena/project.yml` - Project configuration
-
 ### Root Documentation
 
 - `README.md` - Repository overview and quick start
@@ -123,25 +117,17 @@ This repository uses symlinks to share skills across runtimes:
   - `README.md` - Skills by runtime section
   - `AGENTS.md` - Project structure and CLI Agents sections
 
-## Commit & PR Guidelines
+## Commit & Pull Request Guidelines
 
-- Commit messages use short, imperative summaries (e.g., "Add …", "Update …").
-- PRs should describe the change and rationale.
-- Avoid tagging automation users unless needed; CI reacts to PR events and `@claude` mentions.
+- Commit messages are short, imperative, sentence-case.
+- Branch names use appropriate prefixes on creation (e.g., `feature/short-description`, `bugfix/short-description`).
+- PRs should include: a clear summary, relevant context or linked issue.
+- When instructed to create a PR, create it as a draft with appropriate labels by default.
 
 ## Agent-Specific Notes
 
 - Agent and prompt files are the product of this repo—treat them as source of truth.
 - Prefer small, focused edits per file for reviewability.
-
-## Serena MCP Usage (Prioritize When Available)
-
-- Use Serena MCP tools first when available.
-- Check Serena MCP docs/help before calling a tool to confirm names and arguments.
-- Use MCP-exposed tools for reading/writing files and fetching data.
-- Never hardcode secrets; rely on environment variables or MCP credentials.
-- If Serena MCP is unavailable or missing a capability, state it and propose a safe fallback.
-- Be explicit and reproducible when describing tool usage.
 
 ## Codex CLI Agents
 
@@ -270,10 +256,7 @@ language = "typescript"
 
 ```
 .claude/agents/
-├── codex-ask.md     # Question-answering agent
-├── codex-exec.md    # Execution agent
-├── codex-review.md  # Code review agent
-└── codex-search.md  # Web search agent
+└── codex.md  # Unified Codex agent (ask, exec, review, search modes)
 ```
 
 ## Copilot CLI Agents
@@ -294,10 +277,7 @@ Specialized Claude Code agents that integrate GitHub Copilot CLI capabilities fo
 
 ```
 .claude/agents/
-├── copilot-ask.md     # Question-answering agent
-├── copilot-exec.md    # Execution agent
-├── copilot-review.md  # Code review agent
-└── copilot-search.md  # Web search agent
+└── copilot.md  # Unified Copilot agent (ask, exec, review, search modes)
 ```
 
 ## Gemini CLI Agents
@@ -318,10 +298,7 @@ Specialized Claude Code agents that integrate Gemini CLI capabilities for autono
 
 ```
 .claude/agents/
-├── gemini-ask.md     # Question-answering agent
-├── gemini-exec.md    # Execution agent
-├── gemini-review.md  # Code review agent
-└── gemini-search.md  # Web search agent
+└── gemini.md  # Unified Gemini agent (ask, exec, review, search modes)
 ```
 
 ## Spec Kit Workflow
