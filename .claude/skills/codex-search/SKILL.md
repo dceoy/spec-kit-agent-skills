@@ -27,6 +27,7 @@ codex --version  # Should display installed version
 ```
 
 **Requirements:**
+
 - Internet connectivity for web search
 - Authenticated Codex access (ChatGPT Plus/Pro/Team/Enterprise or API key in `~/.codex/config.toml`)
 - Web search enabled in `~/.codex/config.toml` as follows:
