@@ -70,14 +70,13 @@ Install and authenticate the required CLI tools before running skills. See `READ
 **YAML Files**
 
 - 2-space indentation (see `.github/workflows/ci.yml`)
-- Skill configs use `skill.yaml` in each skill directory
+- Skill configs live in `SKILL.md` front matter in each skill directory
 - Boolean values: `true`/`false` (lowercase)
 
 **Skill Structure**
 Each skill directory must contain:
 
-- `skill.yaml` - Skill configuration and metadata
-- `SKILL.md` - Documentation and usage instructions
+- `SKILL.md` - Documentation and YAML front matter for configuration and metadata
 
 ## Symlink Strategy
 
@@ -86,7 +85,7 @@ This repository uses symlinks to share skills across runtimes:
 **Source Skills** (`skills/`)
 
 - Primary location for Spec Kit skills (speckit-\*)
-- Contains actual skill directories with `skill.yaml` and `SKILL.md`
+- Contains actual skill directories with `SKILL.md` (front matter + documentation)
 
 **Symlinked Skills**
 

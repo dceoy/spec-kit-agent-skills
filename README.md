@@ -13,7 +13,7 @@ This repository provides reusable skills and templates for multiple agent runtim
 - **Gemini CLI** - Command files in `.gemini/commands/`
 - **Spec Kit** - Spec-Driven Development workflow skills (`speckit-*`) across all runtimes
 
-Each skill directory contains a `skill.yaml` configuration and `SKILL.md` documentation.
+Each skill directory has a `SKILL.md` with YAML front matter that includes the skill configuration and documentation.
 
 ### Spec Kit Workflow
 
@@ -38,7 +38,7 @@ See **[AGENTS.md](./AGENTS.md#spec-kit-workflow)** for the complete workflow gui
    ```
 
 2. Pick a runtime and explore the skills:
-   - **Shared skills:** `skills/` (source directories with `skill.yaml` + `SKILL.md`)
+   - **Shared skills:** `skills/` (source directories with `SKILL.md` + YAML front matter)
    - **Claude Code:** `.claude/commands/` (command prompts), `.claude/skills` (symlink to `../skills`)
    - **Codex CLI:** `.codex/prompts/` (prompt files), `.codex/skills` (symlink to `../skills`)
    - **Gemini CLI:** `.gemini/commands/` (prompt files)
@@ -130,7 +130,7 @@ Install and authenticate the required CLI tools before running skills:
 
 - Confirm the skill directory exists in the expected runtime location
 - Check that skill name matches exactly (case-sensitive)
-- Verify `skill.yaml` exists in the skill directory
+- Verify `SKILL.md` exists in the skill directory and includes YAML front matter
 
 **CLI not in PATH**
 
