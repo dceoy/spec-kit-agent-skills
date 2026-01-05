@@ -1,6 +1,6 @@
 # spec-kit-agent-skills
 
-Agent Skills for Spec Kit
+Agent Skills for [Spec Kit](https://github.com/github/spec-kit)
 
 ## Overview
 
