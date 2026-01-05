@@ -29,6 +29,25 @@ This repository implements the **Spec-Driven Development** methodology via Spec 
 
 See **[AGENTS.md](./AGENTS.md#spec-kit-workflow)** for the complete workflow guide with examples and best practices.
 
+#### Visual workflow
+
+```mermaid
+flowchart TD
+  %% Core (recommended order)
+  C0["/speckit.constitution"] --> C1["/speckit.specify"] --> C2["/speckit.plan"] --> C3["/speckit.tasks"] --> C4["/speckit.implement"]
+
+  %% Optional (dashed = insert/assist)
+  C1 -.-> O1["/speckit.clarify"]
+  O1 -.-> C2
+
+  C3 -.-> O2["/speckit.analyze"]
+  O2 -.-> C4
+
+  C1 -.-> O3["/speckit.checklist"]
+  C2 -.-> O3
+  C3 -.-> O3
+```
+
 ## Quick start
 
 1. Clone the repo:

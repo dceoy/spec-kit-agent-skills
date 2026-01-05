@@ -119,6 +119,10 @@ This repository uses symlinks to share skills across runtimes:
   - `README.md` - Skills by runtime section
   - `AGENTS.md` - Project structure and CLI Agents sections
 
+## Automation
+
+- `.github/workflows/ci.yml` runs `specify init --force --here --ai` across runtimes, formats Markdown/JSON outputs, and regenerates `VERSION.md` from `specify version`. Avoid hand-editing generated assets when rerunning the workflow locally.
+
 ## Commit & Pull Request Guidelines
 
 - Commit messages are short, imperative, sentence-case.
@@ -138,6 +142,16 @@ This repository uses symlinks to share skills across runtimes:
 - **Codex CLI**: Spec Kit prompt files in `.codex/prompts/`; uses shared skills via the symlinked `.codex/skills`.
 - **GitHub Copilot CLI**: Spec Kit agents in `.github/agents/`, prompts in `.github/prompts/`, and shared skills via `.github/skills`.
 - **Gemini CLI**: Spec Kit command prompts in `.gemini/commands/`.
+
+### Current skill inventory
+
+- All runtimes include: `/speckit.constitution`, `/speckit.specify`, `/speckit.clarify`, `/speckit.plan`, `/speckit.analyze`, `/speckit.tasks`, `/speckit.implement`, `/speckit.checklist`, `/speckit.taskstoissues`.
+- File patterns by runtime:
+  - Source configs: `skills/speckit-*/SKILL.md`
+  - Claude commands: `.claude/commands/speckit.<name>.md`
+  - Codex prompts: `.codex/prompts/speckit.<name>.md`
+  - Copilot prompts/agents: `.github/prompts/speckit.<name>.prompt.md` and `.github/agents/speckit.<name>.agent.md`
+  - Gemini commands: `.gemini/commands/speckit.<name>.toml`
 
 ## Spec Kit Workflow
 
