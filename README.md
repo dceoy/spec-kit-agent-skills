@@ -1,6 +1,6 @@
 # spec-kit-agent-skills
 
-Agent Skills for [Spec Kit](https://github.com/github/spec-kit)
+Agent skills for [Spec Kit](https://github.com/github/spec-kit)
 
 ## Overview
 
@@ -154,8 +154,8 @@ Install and authenticate the required CLI tools before running skills:
 
 ## Contributing
 
-See `AGENTS.md` for repository guidelines and agent-specific rules.
+See [AGENTS.md](./AGENTS.md) for repository guidelines and agent-specific rules.
 
 ## License
 
-See `LICENSE` for details.
+See [LICENSE](./LICENSE) for details.
