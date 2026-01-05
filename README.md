@@ -1,4 +1,4 @@
-# ai-coding-agent-skills
+# spec-kit-agent-skills
 
 Agent skills for AI coders
 
@@ -34,7 +34,7 @@ See **[AGENTS.md](./AGENTS.md#spec-kit-workflow)** for the complete workflow gui
 1. Clone the repo:
 
    ```bash
-   git clone git@github.com:dceoy/ai-coding-agent-skills.git
+   git clone git@github.com:dceoy/spec-kit-agent-skills.git
    ```
 
 2. Pick a runtime and explore the skills:
