@@ -1,6 +1,9 @@
 ---
 name: CI/CD
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -79,7 +82,9 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   update-speckit:
     if: >
-      github.event_name == 'workflow_dispatch' && inputs.workflow == 'update'
+      github.event_name == 'push'
+      || (github.event_name == 'pull_request' && github.event.action != 'ready_for_review')
+      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'update')
     permissions:
       contents: write
       pull-requests: write
@@ -113,15 +118,20 @@ jobs:
           echo 'claude codex gemini copilot'
           | tr ' ' '\n'
           | xargs -L1 -t specify init --force --here --ai
-      - name: Prettify output files
-        run: >
-          npx prettier --write .*/**/*.{md,json}
       - name: Check installed tools
         run: >
           specify check
-      - name: Save `specify version` to VERSION.txt
+      - name: Save `specify version` output to VERSION.md
+        run: |
+          {
+            echo '# Spec Kit Version';
+            echo '```';
+            specify version;
+            echo '```';
+          } | tee VERSION.md
+      - name: Prettify output files
         run: >
-          specify version | tee VERSION.txt
+          npx prettier --write .*/**/*.{md,json}
       - name: Commit and push the changes
         uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5  # v9.1.4
         with:
