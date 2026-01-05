@@ -85,7 +85,7 @@ This repository uses symlinks to share skills across runtimes:
 
 **Source Skills** (`skills/`)
 
-- Primary location for Spec Kit skills (speckit-*)
+- Primary location for Spec Kit skills (speckit-\*)
 - Contains actual skill directories with `skill.yaml` and `SKILL.md`
 
 **Symlinked Skills**

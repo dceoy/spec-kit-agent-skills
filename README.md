@@ -1,6 +1,6 @@
 # spec-kit-agent-skills
 
-Agent skills for AI coders
+Agent Skills for Spec Kit
 
 ## Overview
 
