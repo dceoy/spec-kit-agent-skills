@@ -1,4 +1,4 @@
-# spec-kit-agent-skills
+# speckit-agent-skills
 
 Agent skills for [Spec Kit](https://github.com/github/spec-kit)
 
@@ -53,7 +53,7 @@ flowchart TD
 1. Clone the repo:
 
    ```bash
-   git clone git@github.com:dceoy/spec-kit-agent-skills.git
+   git clone git@github.com:dceoy/speckit-agent-skills.git
    ```
 
 2. Pick a runtime and explore the skills:

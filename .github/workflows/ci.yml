@@ -71,16 +71,16 @@ jobs:
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
-    uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
     permissions:
       contents: write
       pull-requests: write
       actions: read
+    uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
     with:
       unconditional: true
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  update-speckit:
+  speckit-init:
     if: >
       github.event_name == 'push'
       || (github.event_name == 'pull_request' && github.event.action != 'ready_for_review')
@@ -88,54 +88,9 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    defaults:
-      run:
-        shell: bash -euo pipefail {0}
-        working-directory: .
-    runs-on: ubuntu-slim
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          persist-credentials: true
-      - name: Set up uv
-        uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867  # v7.1.6
-        with:
-          version: latest
-      - name: Setup Node.js
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f  # v6.1.0
-        with:
-          node-version: latest
-      - name: Install coding agents
-        run: >
-          npm install -g @anthropic-ai/claude-code @openai/codex @google/gemini-cli @github/copilot
-      - name: Install Specify CLI
-        run: >
-          uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
-      - name: Update Spec Kit
-        run: >
-          echo 'claude codex gemini copilot'
-          | tr ' ' '\n'
-          | xargs -L1 -t specify init --force --here --ai
-      - name: Check installed tools
-        run: >
-          specify check
-      - name: Save `specify version` output to VERSION.md
-        run: |
-          {
-            echo '# Spec Kit Version';
-            echo '```';
-            specify version;
-            echo '```';
-          } | tee VERSION.md
-      - name: Prettify output files
-        run: >
-          find . -type f \( -name '*.md' -o -name '*.json' \) -exec npx prettier --write {} \;
-      - name: Commit and push the changes
-        uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5  # v9.1.4
-        with:
-          add: .
-          message: Update Spec Kit
-          push: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+    uses: dceoy/gh-actions-for-devops/.github/workflows/speckit-init.yml@main
+    with:
+      ai-assistants: claude,codex,gemini,copilot
+      version-md-file-to-write: VERSION.md
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
