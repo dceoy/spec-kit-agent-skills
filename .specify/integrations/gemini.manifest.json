@@ -1,7 +1,7 @@
 {
   "integration": "gemini",
   "version": "0.15.1",
-  "installed_at": "2026-07-31T14:49:21.197652+00:00",
+  "installed_at": "2026-07-31T14:54:59.731143+00:00",
   "files": {
     ".gemini/commands/speckit.analyze.toml": "8165191c10b535c017effca1cfa67020961f5f452ad14535db65d49d174c266d",
     ".gemini/commands/speckit.clarify.toml": "681f5648d71728144c8d8a27df59f0cffde953a4e854ccc72804fe1e9db800fc",
