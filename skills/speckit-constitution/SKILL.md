@@ -1,28 +1,85 @@
 ---
-name: speckit-constitution
-description: Create or update the project constitution from interactive or provided principle inputs, ensuring all dependent templates stay in sync.
+name: "speckit-constitution"
+description: "Create or update the project constitution from interactive or provided principle inputs."
+compatibility: "Requires spec-kit project structure with .specify/ directory"
+metadata:
+  author: "github-spec-kit"
+  source: "templates/commands/constitution.md"
 ---
 
-# Spec Kit Constitution Skill
+## User Input
 
-## When to Use
+```text
+$ARGUMENTS
+```
 
-- Initial project setup or when governance principles need updates.
+You **MUST** consider the user input before proceeding (if not empty).
 
-## Inputs
+## Scope Guard
 
-- User-provided principles or amendments.
-- Existing `.specify/memory/constitution.md` and templates.
+This command's own work is limited to updating the project constitution itself. Dependent templates
+and commands read the constitution at runtime and are not modified here.
 
-If the request is missing or ambiguous, ask focused questions before proceeding.
+- Classify every part of the user input as either constitution content or a separate,
+  non-governance intent.
+- If the input includes feature implementation, code generation, refactoring, building, or
+  deployment requests, you **MUST NOT** execute them. Extract them as deferred intents instead.
+- You **MUST NOT** create, modify, or delete application source files, feature routes,
+  components, tests, deployment files, or other artifacts unrelated to the constitution
+  workflow.
+- If it is unclear whether an instruction is constitution content, ask for clarification before
+  making changes.
+- After completing the constitution update, include a `Next Actions` section for each deferred
+  intent. List the original intent and suggest the appropriate follow-up Spec Kit command, such
+  as `$speckit-specify`, without invoking it.
+- If there are no non-governance intents, omit the `Next Actions` section.
 
-## Workflow
+## Pre-Execution Checks
 
-You are updating the project constitution at `.specify/memory/constitution.md`. This file is a TEMPLATE containing placeholder tokens in square brackets (e.g. `[PROJECT_NAME]`, `[PRINCIPLE_1_NAME]`). Your job is to (a) collect/derive concrete values, (b) fill the template precisely, and (c) propagate any amendments across dependent artifacts.
+**Check for extension hooks (before constitution update)**:
+
+- Check if `.specify/extensions.yml` exists in the project root.
+- If it exists, read it and look for entries under the `hooks.before_constitution` key
+- If the YAML cannot be parsed or is invalid, skip hook checking silently and continue normally
+- Filter out hooks where `enabled` is explicitly `false`. Treat hooks without an `enabled` field as enabled by default.
+- For each remaining hook, do **not** attempt to interpret or evaluate hook `condition` expressions:
+  - If the hook has no `condition` field, or it is null/empty, treat the hook as executable
+  - If the hook defines a non-empty `condition`, skip the hook and leave condition evaluation to the HookExecutor implementation
+- When constructing command invocations from hook command names, replace dots (`.`) with hyphens (`-`). For example, `speckit.git.commit` → `$speckit-git-commit`.
+- For each executable hook, output the following based on its `optional` flag:
+  - **Optional hook** (`optional: true`):
+    ```
+    ## Extension Hooks
+
+    **Optional Pre-Hook**: {extension}
+    Command: `/{command}`
+    Description: {description}
+
+    Prompt: {prompt}
+    To execute: `/{command}`
+    ```
+  - **Mandatory hook** (`optional: false`):
+    ```
+    ## Extension Hooks
+
+    **Automatic Pre-Hook**: {extension}
+    Executing: `/{command}`
+    EXECUTE_COMMAND: {command}
+
+    Wait for the result of the hook command before proceeding to the Outline.
+    ```
+    After emitting the block above you MUST actually invoke the hook and wait for it to finish before continuing. Run it the same way you would run the command yourself in this agent/session (the invocation may differ from the literal `{command}` id shown above, e.g. a skills-mode agent runs it as `/skill:speckit-...` or `$speckit-...`). Emitting the block alone does not run the hook.
+- If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
+
+## Outline
+
+You are updating the project constitution at `.specify/memory/constitution.md`. This file is a TEMPLATE containing placeholder tokens in square brackets (e.g. `[PROJECT_NAME]`, `[PRINCIPLE_1_NAME]`). Your job is to (a) collect/derive concrete values and (b) fill the template precisely.
+
+**Note**: If `.specify/memory/constitution.md` does not exist yet, it should have been initialized from `.specify/templates/constitution-template.md` during project setup. If it's missing, copy the template first.
 
 Follow this execution flow:
 
-1. Load the existing constitution template at `.specify/memory/constitution.md`.
+1. Load the existing constitution at `.specify/memory/constitution.md`.
    - Identify every placeholder token of the form `[ALL_CAPS_IDENTIFIER]`.
      **IMPORTANT**: The user might require less or more principles than the ones used in the template. If a number is specified, respect that - follow the general template. You will update the doc accordingly.
 
@@ -42,39 +99,26 @@ Follow this execution flow:
    - Ensure each Principle section: succinct name line, paragraph (or bullet list) capturing non‑negotiable rules, explicit rationale if not obvious.
    - Ensure Governance section lists amendment procedure, versioning policy, and compliance review expectations.
 
-4. Consistency propagation checklist (convert prior checklist into active validations):
-   - Read `.specify/templates/plan-template.md` and ensure any "Constitution Check" or rules align with updated principles.
-   - Read `.specify/templates/spec-template.md` for scope/requirements alignment—update if constitution adds/removes mandatory sections or constraints.
-   - Read `.specify/templates/tasks-template.md` and ensure task categorization reflects new or removed principle-driven task types (e.g., observability, versioning, testing discipline).
-   - Review runtime prompts/agents for outdated references and align with updated principles:
-     - `.claude/commands/speckit.*.md`
-     - `.codex/prompts/speckit.*.md`
-     - `.gemini/commands/speckit.*.toml`
-     - `.github/prompts/speckit.*.prompt.md`
-     - `.github/agents/speckit.*.agent.md`
-     - `skills/speckit-*/SKILL.md`
-   - Read any runtime guidance docs (e.g., `README.md`, `docs/quickstart.md`, or agent-specific guidance files if present). Update references to principles changed.
-
-5. Produce a Sync Impact Report (prepend as an HTML comment at top of the constitution file after update):
+4. Produce a Sync Impact Report (prepend as an HTML comment at top of the constitution file after update):
    - Version change: old → new
    - List of modified principles (old title → new title if renamed)
    - Added sections
    - Removed sections
-   - Templates requiring updates (✅ updated / ⚠ pending) with file paths
    - Follow-up TODOs if any placeholders intentionally deferred.
 
-6. Validation before final output:
+5. Validation before final output:
    - No remaining unexplained bracket tokens.
    - Version line matches report.
    - Dates ISO format YYYY-MM-DD.
    - Principles are declarative, testable, and free of vague language ("should" → replace with MUST/SHOULD rationale where appropriate).
 
-7. Write the completed constitution back to `.specify/memory/constitution.md` (overwrite).
+6. Write the completed constitution back to `.specify/memory/constitution.md` (overwrite).
 
-8. Output a final summary to the user with:
+7. Output a final summary to the user with:
    - New version and bump rationale.
-   - Any files flagged for manual follow-up.
+   - Any TODO placeholders or deferred items requiring manual follow-up.
    - Suggested commit message (e.g., `docs: amend constitution to vX.Y.Z (principle additions + governance update)`).
+   - A `Next Actions` section for any deferred non-governance intents.
 
 Formatting & Style Requirements:
 
@@ -89,13 +133,37 @@ If critical info missing (e.g., ratification date truly unknown), insert `TODO(<
 
 Do not create a new template; always operate on the existing `.specify/memory/constitution.md` file.
 
-## Outputs
+## Post-Execution Checks
 
-- Updated `.specify/memory/constitution.md` (with Sync Impact Report comment)
-- Any updated templates or runtime guidance files required to stay consistent with the constitution
+**Check for extension hooks (after constitution update)**:
+Check if `.specify/extensions.yml` exists in the project root.
 
-## Next Steps
+- If it exists, read it and look for entries under the `hooks.after_constitution` key
+- If the YAML cannot be parsed or is invalid, skip hook checking silently and continue normally
+- Filter out hooks where `enabled` is explicitly `false`. Treat hooks without an `enabled` field as enabled by default.
+- For each remaining hook, do **not** attempt to interpret or evaluate hook `condition` expressions:
+  - If the hook has no `condition` field, or it is null/empty, treat the hook as executable
+  - If the hook defines a non-empty `condition`, skip the hook and leave condition evaluation to the HookExecutor implementation
+- When constructing command invocations from hook command names, replace dots (`.`) with hyphens (`-`). For example, `speckit.git.commit` → `$speckit-git-commit`.
+- For each executable hook, output the following based on its `optional` flag:
+  - **Optional hook** (`optional: true`):
+    ```
+    ## Extension Hooks
 
-After updating the constitution:
+    **Optional Hook**: {extension}
+    Command: `/{command}`
+    Description: {description}
 
-- **Specify** new features with speckit-specify.
+    Prompt: {prompt}
+    To execute: `/{command}`
+    ```
+  - **Mandatory hook** (`optional: false`):
+    ```
+    ## Extension Hooks
+
+    **Automatic Hook**: {extension}
+    Executing: `/{command}`
+    EXECUTE_COMMAND: {command}
+    ```
+    After emitting the block above you MUST actually invoke the hook and wait for it to finish before continuing. Run it the same way you would run the command yourself in this agent/session (the invocation may differ from the literal `{command}` id shown above, e.g. a skills-mode agent runs it as `/skill:speckit-...` or `$speckit-...`). Emitting the block alone does not run the hook.
+- If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently

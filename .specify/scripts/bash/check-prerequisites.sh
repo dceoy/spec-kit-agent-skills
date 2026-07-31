@@ -58,13 +58,13 @@ OPTIONS:
 EXAMPLES:
   # Check task prerequisites (plan.md required)
   ./check-prerequisites.sh --json
-  
+
   # Check implementation prerequisites (plan.md + tasks.md required)
   ./check-prerequisites.sh --json --require-tasks --include-tasks
-  
+
   # Get feature paths only (no validation)
   ./check-prerequisites.sh --paths-only
-  
+
 EOF
             exit 0
             ;;
@@ -79,13 +79,18 @@ done
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-# Get feature paths and validate branch
-_paths_output=$(get_feature_paths) || { echo "ERROR: Failed to resolve feature paths" >&2; exit 1; }
+# Get feature paths.
+# In --paths-only mode this is pure resolution, so pass --no-persist to opt out
+# of the feature.json write side effect (issue #3025).
+if $PATHS_ONLY; then
+    _paths_output=$(get_feature_paths --no-persist) || { echo "ERROR: Failed to resolve feature paths" >&2; exit 1; }
+else
+    _paths_output=$(get_feature_paths) || { echo "ERROR: Failed to resolve feature paths" >&2; exit 1; }
+fi
 eval "$_paths_output"
 unset _paths_output
-check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 
-# If paths-only mode, output paths and exit (support JSON + paths-only combined)
+# If paths-only mode, output paths and exit (no validation)
 if $PATHS_ONLY; then
     if $JSON_MODE; then
         # Minimal JSON paths payload (no validation performed)
@@ -169,7 +174,7 @@ if $JSON_MODE; then
         if [[ ${#docs[@]} -eq 0 ]]; then
             json_docs="[]"
         else
-            json_docs=$(printf '"%s",' "${docs[@]}")
+            json_docs=$(for d in "${docs[@]}"; do printf '"%s",' "$(json_escape "$d")"; done)
             json_docs="[${json_docs%,}]"
         fi
         printf '{"FEATURE_DIR":"%s","AVAILABLE_DOCS":%s}\n' "$(json_escape "$FEATURE_DIR")" "$json_docs"
@@ -178,13 +183,13 @@ else
     # Text output
     echo "FEATURE_DIR:$FEATURE_DIR"
     echo "AVAILABLE_DOCS:"
-    
+
     # Show status of each potential document
     check_file "$RESEARCH" "research.md"
     check_file "$DATA_MODEL" "data-model.md"
     check_dir "$CONTRACTS_DIR" "contracts/"
     check_file "$QUICKSTART" "quickstart.md"
-    
+
     if $INCLUDE_TASKS; then
         check_file "$TASKS" "tasks.md"
     fi
