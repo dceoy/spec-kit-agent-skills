@@ -12,7 +12,7 @@
 
 ╭────────────────────────── Specify CLI Information ───────────────────────────╮
 │                                                                              │
-│     CLI Version    0.15.1                                                    │
+│     CLI Version    0.16.0                                                    │
 │                                                                              │
 │          Python    3.12.3                                                    │
 │        Platform    Linux                                                     │
