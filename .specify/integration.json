@@ -1,5 +1,5 @@
 {
-  "version": "0.16.0",
+  "version": "0.16.1",
   "integration_state_schema": 1,
   "installed_integrations": ["opencode"],
   "integration_settings": {
