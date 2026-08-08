@@ -95,7 +95,21 @@ jobs:
             specify --version;
             echo '```';
           } | tee "${VERSION_MD_FILE}"
+      - name: Check whether Spec Kit version changed
+        id: version-changed
+        if: inputs.version-md-file-to-write != null
+        env:
+          VERSION_MD_FILE: ${{ inputs.version-md-file-to-write }}
+        run: |
+          if [[ -n "$(git status --porcelain -- "${VERSION_MD_FILE}")" ]]; then
+            echo 'changed=true' >> "${GITHUB_OUTPUT}"
+          else
+            echo 'changed=false' >> "${GITHUB_OUTPUT}"
+          fi
       - name: Initialize Spec Kit
+        if: >
+          inputs.version-md-file-to-write == null
+          || steps.version-changed.outputs.changed == 'true'
         env:
           AI_ASSISTANTS: ${{ inputs.ai-assistants }}
           SCRIPT_TYPE: ${{ inputs.script-type }}
@@ -103,11 +117,18 @@ jobs:
           tr ',' '\n' <<< "${AI_ASSISTANTS}"
           | xargs -L1 -t specify init --force --here --ignore-agent-tools --script "${SCRIPT_TYPE}" --integration
       - name: Prettify output files
-        if: inputs.prettify-md-and-json
+        if: >
+          inputs.prettify-md-and-json
+          && (inputs.version-md-file-to-write == null
+          || steps.version-changed.outputs.changed == 'true')
         run: >
           npx prettier --write './**/*.{md,json}'
       - name: Disable shellcheck in Spec Kit shell scripts
-        if: inputs.script-type == 'sh' && inputs.disable-shellcheck
+        if: >
+          inputs.script-type == 'sh'
+          && inputs.disable-shellcheck
+          && (inputs.version-md-file-to-write == null
+          || steps.version-changed.outputs.changed == 'true')
         working-directory: .specify
         run: |
           while IFS= read -r f; do
@@ -115,6 +136,9 @@ jobs:
           done < <(find . -type f -name '*.sh')
           find . -type f -name '*.she' -delete
       - name: Commit and push the changes
+        if: >
+          inputs.version-md-file-to-write == null
+          || steps.version-changed.outputs.changed == 'true'
         uses: EndBug/add-and-commit@290ea2c423ad77ca9c62ae0f5b224379612c0321  # v10.0.0
         with:
           add: ${{ inputs.git-add-args }}
