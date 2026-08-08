@@ -4,36 +4,36 @@ Agent skills for [Spec Kit](https://github.com/github/spec-kit)
 
 ## Overview
 
-This repository provides reusable skills and templates for multiple agent runtimes:
+This repository provides reusable skills and Spec Kit-generated entry points for multiple agent runtimes:
 
-- **Shared skills** - Source skills live in `skills/` and are symlinked to `.claude/skills`, `.codex/skills`, and `.github/skills`
-- **Claude Code** - Spec Kit commands in `.claude/commands/` (skills via the symlinked `.claude/skills`)
-- **Codex CLI** - Prompt files in `.codex/prompts/` (skills via the symlinked `.codex/skills`)
-- **GitHub Copilot CLI** - Agent files in `.github/agents/`, prompt files in `.github/prompts/`, skills via `.github/skills`
-- **Gemini CLI** - Command files in `.gemini/commands/`
-- **Spec Kit** - Spec-Driven Development workflow skills (`speckit-*`) across all runtimes
+- **Shared skills** - Source skills live in `skills/` and are exposed to Claude Code through `.claude/skills` and Codex CLI through `.agents/skills`.
+- **GitHub Copilot CLI** - Spec Kit agent files live in `.github/agents/` with companion prompt files in `.github/prompts/`.
+- **Gemini CLI** - Spec Kit command files live in `.gemini/commands/`.
+- **OpenCode** - Spec Kit command files live in `.opencode/commands/`.
+- **Spec Kit** - Spec-Driven Development workflow skills (`speckit-*`) are shared across supported runtimes.
 
 Each skill directory has a `SKILL.md` with YAML front matter that includes the skill configuration and documentation.
 
 ## Quickstart
 
-1.  Clone this repository and change into it.
+1. Clone this repository and change into it.
 
-    ```bash
-    git clone https://github.com/github/speckit-agent-skills.git
-    ```
+   ```bash
+   git clone https://github.com/dceoy/speckit-agent-skills.git
+   cd speckit-agent-skills
+   ```
 
-2.  Install [Spec Kit](https://github.com/github/spec-kit).
+2. Install [Spec Kit](https://github.com/github/spec-kit).
 
-3.  Create a new project or initialize an existing project using `specify init`.
+3. Create a new project or initialize an existing project using `specify init`.
 
-4.  Copy the `skills/` directory into the project's agent skills directory (e.g., `.claude/skills/`).
+4. Copy the `skills/` directory into the project's agent skills directory when the runtime does not already expose it.
 
-    ```bash
-    cp -a speckit-agent-skills/skills/* /path/to/a/project/agent/directory/skills/
-    ```
+   ```bash
+   cp -a speckit-agent-skills/skills/* /path/to/a/project/agent/directory/skills/
+   ```
 
-5.  Use the skills on your preferred agent (e.g., Claude Code).
+5. Use the skills on your preferred agent.
 
 ### Spec Kit Workflow
 
@@ -79,51 +79,55 @@ flowchart TD
 
 ### Runtime access
 
-- **Claude Code:** `.claude/commands/` (Spec Kit prompts) and `.claude/skills` (symlink to `../skills`)
-- **Codex CLI:** `.codex/prompts/` (Spec Kit prompts) and `.codex/skills` (symlink to `../skills`)
-- **GitHub Copilot CLI:** `.github/agents/` (Spec Kit agents), `.github/prompts/`, `.github/skills` (symlink to `../skills`)
-- **Gemini CLI:** `.gemini/commands/` (Spec Kit prompts)
+- **Claude Code:** `.claude/skills` (symlink to `../skills`)
+- **Codex CLI:** `.agents/skills` (symlink to `../skills`)
+- **GitHub Copilot CLI:** `.github/agents/` and `.github/prompts/`
+- **Gemini CLI:** `.gemini/commands/`
+- **OpenCode:** `.opencode/commands/`
+
+Legacy Spec Kit command layouts such as `.claude/commands/`, `.codex/prompts/`, and `.opencode/command/` are intentionally not maintained.
 
 ## Structure
 
-```
+```text
 .
 ├── skills/              # Source skills (speckit-*)
-├── .claude/
-│   ├── commands/        # Claude Code command prompts (speckit.*)
+├── .agents/
 │   └── skills -> ../skills
-├── .codex/
-│   ├── prompts/         # Codex CLI prompt files (speckit.*)
+├── .claude/
 │   └── skills -> ../skills
 ├── .gemini/
-│   └── commands/        # Gemini CLI prompt files (speckit.*.toml)
+│   └── commands/        # Gemini CLI commands (speckit.*.toml)
 ├── .github/
 │   ├── agents/          # GitHub Copilot CLI agents (speckit.*.agent.md)
-│   ├── prompts/         # GitHub Copilot CLI prompts (speckit.*.prompt.md)
-│   ├── skills -> ../skills
-│   └── workflows/       # CI workflows (ci.yml)
-└── .specify/            # Spec Kit templates and memory files
+│   ├── prompts/         # GitHub Copilot CLI prompt wrappers
+│   └── workflows/       # CI workflows
+├── .opencode/
+│   └── commands/        # OpenCode commands (speckit.*.md)
+└── .specify/            # Spec Kit project infrastructure
     ├── memory/
     ├── scripts/
-    │   └── bash/        # Helper scripts used by skills
-    └── templates/       # spec, plan, tasks, checklist, agent-file templates
+    │   └── bash/        # Core helper scripts managed by Spec Kit
+    └── templates/       # Core spec, plan, tasks, checklist, constitution templates
 ```
 
 ## Prerequisites
 
-Install and authenticate the required CLI tools before running skills:
+Install and authenticate the runtime tools you intend to use:
 
-- **Claude Code** - For `.claude/commands/` and shared skills via `.claude/skills`
-- **GitHub Copilot CLI** - For `.github/agents/` and shared skills via `.github/skills`
-- **OpenAI Codex CLI** - For `.codex/prompts/` and shared skills via `.codex/skills`
-- **Gemini CLI** - For `.gemini/commands/`
+- **Claude Code** - Uses shared skills through `.claude/skills`
+- **OpenAI Codex CLI** - Uses shared skills through `.agents/skills`
+- **GitHub Copilot CLI** - Uses `.github/agents/` and `.github/prompts/`
+- **Gemini CLI** - Uses `.gemini/commands/`
+- **OpenCode** - Uses `.opencode/commands/`
 - **Spec Kit** - Install from [github.com/github/spec-kit](https://github.com/github/spec-kit)
 
 ## Usage notes
 
 - Skills do not always auto-run; use your agent's skill invocation flow or ask for the skill explicitly.
 - If a skill fails, open its `SKILL.md` and verify prerequisites and command syntax.
-- Spec Kit helper scripts live in `.specify/scripts/bash` (bash-only). Run them from repo root and prefer their `--json` output (absolute paths).
+- Spec Kit core helper scripts live in `.specify/scripts/bash/`. Run them from the repository root and prefer their `--json` output when available.
+- Generated runtime files should follow the current Spec Kit release; do not restore legacy layouts that are no longer emitted by the active integration.
 
 ## Contributing
 
