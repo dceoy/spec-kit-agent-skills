@@ -31,7 +31,7 @@ jobs:
       pull-requests: write
     uses: ./.github/workflows/speckit-init.yml
     with:
-      ai-assistants: claude,codex,gemini,copilot,opencode
+      ai-assistants: codex,agy,cursor-agent,copilot,opencode,claude
       version-md-file-to-write: VERSION.md
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

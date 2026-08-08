@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=all
 # Common functions and variables for all scripts
 
 # Find repository root by searching upward for .specify directory

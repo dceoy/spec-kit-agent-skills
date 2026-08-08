@@ -4,8 +4,9 @@
 
 - `skills/` is the canonical source for shared skills.
 - Each skill lives in `skills/<kebab-name>/SKILL.md` and includes YAML front matter.
-- Runtime-specific entry points live in `.claude/commands/`, `.codex/prompts/`, `.github/agents/`, `.github/prompts/`, and `.gemini/commands/`.
-- Keep filenames aligned across runtimes, for example `speckit.plan.md`, `speckit.plan.prompt.md`, and `speckit.plan.toml`.
+- `.claude/skills` and `.agents/skills` expose the shared skills to Claude Code and Codex CLI.
+- Runtime-specific generated entry points live in `.github/agents/`, `.github/prompts/`, `.gemini/commands/`, and `.opencode/commands/`.
+- Legacy Spec Kit layouts such as `.claude/commands/`, `.codex/prompts/`, and `.opencode/command/` must not be reintroduced unless a supported integration explicitly requires them.
 - Spec Kit support files live in `.specify/scripts/bash/` and `.specify/templates/`.
 - GitHub automation is defined in `.github/workflows/`.
 - `CLAUDE.md` is a symlink to this file, so edit `AGENTS.md` directly.
@@ -17,7 +18,6 @@
 - `git diff --check` catches trailing whitespace and malformed patches before commit.
 - `bash .specify/scripts/bash/check-prerequisites.sh --help` lists supported validation modes.
 - `bash .specify/scripts/bash/check-prerequisites.sh --paths-only` prints the active feature paths without modifying files.
-- `bash .specify/scripts/bash/update-agent-context.sh codex` refreshes agent context from the current `specs/<id>-<name>/plan.md`.
 
 ## Coding Style & Naming Conventions
 
@@ -25,14 +25,14 @@
 - Keep skill directories in kebab-case and limit each directory to one `SKILL.md`.
 - Preserve stable front matter keys such as `name` and `description`.
 - For Bash, follow the existing style in `.specify/scripts/bash/*.sh`: `#!/usr/bin/env bash`, quoted variables, small functions, and defensive checks.
-- When you add or rename a skill, update the matching runtime wrapper filenames in every supported directory.
+- Keep intentionally maintained runtime files synchronized with the current Spec Kit output and shared skills.
 
 ## Testing Guidelines
 
 - No dedicated unit-test framework or coverage gate is checked into this repo.
-- Validate changes by smoke-testing Bash helpers with `--help`, `--json`, or `--paths-only`.
+- Validate changes by smoke-testing current Bash helpers with `--help`, `--json`, or `--paths-only` where supported.
 - Verify Markdown renders cleanly.
-- Confirm runtime-specific prompt or agent files stay synchronized with the source skill.
+- Confirm current runtime-specific files stay synchronized with the shared skills and that obsolete runtime layouts are absent.
 
 ## Commit & Pull Request Guidelines
 
@@ -44,6 +44,6 @@
 
 ## Spec Kit Workflow
 
-- Keep workflow content synchronized across skills, prompts, and templates.
+- Keep workflow content synchronized across skills and the runtime files that are still maintained by the current Spec Kit integrations.
 - The canonical order in this repo is `constitution -> specify` or `baseline -> clarify -> plan -> tasks -> analyze -> implement`.
-- If you add or rename a step, update the source skill and every affected runtime wrapper in the same change.
+- If you add or rename a step, update the source skill and every affected maintained runtime entry point in the same change.

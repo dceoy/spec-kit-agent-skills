@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=all
 
 set -e
 
@@ -31,13 +30,13 @@ unset _paths_output
 # Validate required files
 if [[ ! -f "$IMPL_PLAN" ]]; then
     echo "ERROR: plan.md not found in $FEATURE_DIR" >&2
-    echo "Run /speckit.plan first to create the implementation plan." >&2
+    echo "Run /speckit-plan first to create the implementation plan." >&2
     exit 1
 fi
 
 if [[ ! -f "$FEATURE_SPEC" ]]; then
     echo "ERROR: spec.md not found in $FEATURE_DIR" >&2
-    echo "Run /speckit.specify first to create the feature structure." >&2
+    echo "Run /speckit-specify first to create the feature structure." >&2
     exit 1
 fi
 
