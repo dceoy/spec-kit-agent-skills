@@ -1,0 +1,123 @@
+---
+name: Spec Kit initialization
+on:
+  workflow_call:
+    inputs:
+      ai-assistants:
+        required: false
+        type: string
+        description: AI assistants to use (comma-separated)
+        default: claude,codex,gemini,copilot
+      script-type:
+        required: false
+        type: string
+        description: Script type to use
+        default: sh
+      uv-version:
+        required: false
+        type: string
+        description: Version of uv to use
+        default: latest
+      prettify-md-and-json:
+        required: false
+        type: boolean
+        description: Whether to prettify Markdown and JSON files after initialization
+        default: true
+      disable-shellcheck:
+        required: false
+        type: boolean
+        description: Whether to disable shellcheck in Spec Kit shell scripts
+        default: true
+      git-add-args:
+        required: false
+        type: string
+        description: Arguments for the git add command
+        default: .
+      version-md-file-to-write:
+        required: false
+        type: string
+        description: Path to a Markdown file to write the `specify --version` output to
+        default: null
+    secrets:
+      GH_TOKEN:
+        required: false
+        description: GitHub token
+permissions:
+  contents: write
+  pull-requests: write
+defaults:
+  run:
+    shell: bash -euo pipefail {0}
+    working-directory: .
+jobs:
+  speckit-init:
+    runs-on: ubuntu-slim
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 1
+          persist-credentials: true
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          version: ${{ inputs.uv-version }}
+      - name: Identify the latest version of Spec Kit
+        id: speckit-version
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
+        run: |
+          SPECKIT_VERSION="$(curl -fsSL -H "Authorization: Bearer ${GH_TOKEN}" https://api.github.com/repos/github/spec-kit/releases/latest | jq -er .tag_name)"
+          [[ "${SPECKIT_VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Unexpected Spec Kit release tag: ${SPECKIT_VERSION}" >&2; exit 1; }
+          printf 'SPECKIT_VERSION=%s\n' "${SPECKIT_VERSION}" >> "${GITHUB_OUTPUT}"
+      - name: Install Specify CLI
+        env:
+          SPECKIT_VERSION: ${{ steps.speckit-version.outputs.SPECKIT_VERSION }}
+        run: >
+          uv tool install specify-cli --from "git+https://github.com/github/spec-kit.git@${SPECKIT_VERSION}"
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        with:
+          node-version: latest
+      - name: Display Specify CLI version
+        if: inputs.version-md-file-to-write == null
+        run: >
+          specify --version
+      - name: Save Specify CLI version to a Markdown file
+        if: inputs.version-md-file-to-write != null
+        env:
+          VERSION_MD_FILE: ${{ inputs.version-md-file-to-write }}
+        run: |
+          {
+            echo '# Spec Kit Version';
+            echo '```';
+            specify --version;
+            echo '```';
+          } | tee "${VERSION_MD_FILE}"
+      - name: Initialize Spec Kit
+        env:
+          AI_ASSISTANTS: ${{ inputs.ai-assistants }}
+          SCRIPT_TYPE: ${{ inputs.script-type }}
+        run: >
+          tr ',' '\n' <<< "${AI_ASSISTANTS}"
+          | xargs -L1 -t specify init --force --here --ignore-agent-tools --script "${SCRIPT_TYPE}" --integration
+      - name: Prettify output files
+        if: inputs.prettify-md-and-json
+        run: >
+          npx prettier --write './**/*.{md,json}'
+      - name: Disable shellcheck in Spec Kit shell scripts
+        if: inputs.script-type == 'sh' && inputs.disable-shellcheck
+        working-directory: .specify
+        run: |
+          while IFS= read -r f; do
+            grep -qF '# shellcheck disable=all' "$f" || sed -ie '2i# shellcheck disable=all' "$f"
+          done < <(find . -type f -name '*.sh')
+          find . -type f -name '*.she' -delete
+      - name: Commit and push the changes
+        uses: EndBug/add-and-commit@290ea2c423ad77ca9c62ae0f5b224379612c0321  # v10.0.0
+        with:
+          add: ${{ inputs.git-add-args }}
+          message: Update Spec Kit output files
+          push: true
+          github_token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}  # zizmor: ignore[secrets-outside-env] caller-provided secret
