@@ -3,19 +3,11 @@
 ## Project Structure & Module Organization
 
 - `skills/` is the canonical source for shared skills.
-- Each skill lives in `skills/<kebab-name>/SKILL.md` and includes YAML front matter.
 - `.claude/skills` and `.agents/skills` expose the shared skills to Claude Code and Codex CLI.
-- Runtime-specific generated entry points live in `.github/agents/`, `.github/prompts/`, `.gemini/commands/`, and `.opencode/commands/`.
 - Legacy Spec Kit layouts such as `.claude/commands/`, `.codex/prompts/`, and `.opencode/command/` must not be reintroduced unless a supported integration explicitly requires them.
-- Spec Kit support files live in `.specify/scripts/bash/` and `.specify/templates/`.
-- GitHub automation is defined in `.github/workflows/`.
-- `CLAUDE.md` is a symlink to this file, so edit `AGENTS.md` directly.
 
 ## Build, Test, and Development Commands
 
-- There is no compile step in this repository; most changes are Markdown, templates, and Bash helpers.
-- `git status -sb` shows the current workspace and changed runtime files.
-- `git diff --check` catches trailing whitespace and malformed patches before commit.
 - `bash .specify/scripts/bash/check-prerequisites.sh --help` lists supported validation modes.
 - `bash .specify/scripts/bash/check-prerequisites.sh --paths-only` prints the active feature paths without modifying files.
 
