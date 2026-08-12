@@ -21,6 +21,10 @@ on:
         description: Choose the workflow to run
         default: update
 jobs:
+  markdown-lint:
+    if: >
+      github.event_name == 'push' || github.event_name == 'pull_request'
+    uses: dceoy/gha-for-devops/.github/workflows/markdown-lint.yml@main  # zizmor: ignore[unpinned-uses]
   speckit-init:
     if: >
       github.event_name == 'push'
@@ -38,6 +42,8 @@ jobs:
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    needs:
+      - markdown-lint
     permissions:
       contents: write
       pull-requests: write
