@@ -1,0 +1,39 @@
+---
+name: Markdown format
+on:
+  push:
+    branches:
+      - agent/add-markdown-lint-qa
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        with:
+          node-version: latest
+      - name: Format generated Markdown
+        run: |
+          npx -y prettier@3.9.6 --write \
+            .cursor/skills/speckit-clarify/SKILL.md \
+            .github/agents/speckit.clarify.agent.md \
+            .opencode/commands/speckit.clarify.md \
+            skills/speckit-clarify/SKILL.md
+          config_file="${RUNNER_TEMP}/markdownlint-cli2.jsonc"
+          printf '{"config":{"MD013":false,"MD033":false,"MD041":false}}' > "${config_file}"
+          git ls-files -z -- '*.md' '*.markdown' \
+            | xargs -0 -r npx -y markdownlint-cli2@0.23.2 --config "${config_file}" --
+      - name: Commit formatting
+        run: |
+          if [[ -z "$(git status --porcelain -- '*.md')" ]]; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- '*.md'
+          git commit -m 'Format generated Markdown'
+          git push
