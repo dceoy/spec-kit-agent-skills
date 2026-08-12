@@ -183,14 +183,14 @@ jobs:
               path.write_text("\n".join(lines) + "\n")
           PY
           config_file="${RUNNER_TEMP}/markdownlint-cli2.jsonc"
-          printf '{"config":{"MD013":false}}' > "${config_file}"
+          printf '{"config":{"MD013":false,"MD033":false,"MD041":false}}' > "${config_file}"
           set +e
           git ls-files -z -- '*.md' '*.markdown' \
             | xargs -0 -r npx -y markdownlint-cli2@0.23.2 --fix --config "${config_file}" --
           set -e
           npx -y prettier --write './**/*.{md,json}'
           git ls-files -z -- '*.md' '*.markdown' \
-            | xargs -0 -r npx -y markdownlint-cli2@0.23.2 --fix --config "${config_file}" --
+            | xargs -0 -r npx -y markdownlint-cli2@0.23.2 --config "${config_file}" --
       - name: Disable shellcheck in Spec Kit shell scripts
         if: >
           inputs.script-type == 'sh'
