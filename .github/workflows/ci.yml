@@ -40,7 +40,7 @@ jobs:
       github.event_name == 'push' || github.event_name == 'pull_request'
     uses: dceoy/gha-for-devops/.github/workflows/markdown-lint.yml@main  # zizmor: ignore[unpinned-uses]
     with:
-      markdownlint-config-data: '{"config":{"MD013":false,"MD033":false,"MD041":false}}'
+      search-path: .
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
