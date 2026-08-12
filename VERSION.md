@@ -1,5 +1,5 @@
 # Spec Kit Version
 
 ```text
-specify 0.0.0
+specify 0.16.2
 ```

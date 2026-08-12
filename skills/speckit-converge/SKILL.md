@@ -9,7 +9,7 @@ user-invocable: true
 disable-model-invocation: false
 ---
 
-## User Input
+# User Input
 
 ```text
 $ARGUMENTS
