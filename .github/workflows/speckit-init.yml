@@ -180,6 +180,18 @@ jobs:
                   if re.match(r"^\s*```\S", line):
                       in_fence = True
 
+              if not any("markdownlint-disable MD058" in line for line in lines):
+                  for start, line in enumerate(lines):
+                      if "| Option | Description" not in line:
+                          continue
+                      indent = line[: len(line) - len(line.lstrip())]
+                      end = start
+                      while end + 1 < len(lines) and lines[end + 1].lstrip().startswith("|"):
+                          end += 1
+                      lines.insert(start, f"{indent}<!-- markdownlint-disable MD058 -->")
+                      lines.insert(end + 2, f"{indent}<!-- markdownlint-enable MD058 -->")
+                      break
+
               path.write_text("\n".join(lines) + "\n")
           PY
           config_file="${RUNNER_TEMP}/markdownlint-cli2.jsonc"
