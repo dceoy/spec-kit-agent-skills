@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=all
 
 set -e
 
@@ -44,23 +43,21 @@ if [[ -f "$IMPL_PLAN" ]]; then
         echo "Plan already exists at $IMPL_PLAN, skipping template copy"
     fi
 else
-    if resolve_template_content "plan-template" "$REPO_ROOT" > "$IMPL_PLAN"; then
+    TEMPLATE=$(resolve_template "plan-template" "$REPO_ROOT") || true
+    if [[ -n "$TEMPLATE" ]] && [[ -f "$TEMPLATE" ]]; then
+        cp "$TEMPLATE" "$IMPL_PLAN"
         if $JSON_MODE; then
             echo "Copied plan template to $IMPL_PLAN" >&2
         else
             echo "Copied plan template to $IMPL_PLAN"
         fi
     else
-        resolve_status=$?
-        rm -f "$IMPL_PLAN"
-        if [ "$resolve_status" -ne 1 ]; then
-            exit "$resolve_status"
-        fi
         if $JSON_MODE; then
             echo "Warning: Plan template not found" >&2
         else
             echo "Warning: Plan template not found"
         fi
+        # Create a basic plan file if template doesn't exist
         touch "$IMPL_PLAN"
     fi
 fi

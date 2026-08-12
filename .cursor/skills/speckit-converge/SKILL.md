@@ -7,7 +7,7 @@ metadata:
   source: "templates/commands/converge.md"
 ---
 
-# User Input
+## User Input
 
 ```text
 $ARGUMENTS
