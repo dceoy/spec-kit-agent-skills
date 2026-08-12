@@ -161,6 +161,8 @@ Execution steps:
      - Format as: `**Recommended:** Option [X] - <reasoning>`
      - Then render all options as a Markdown table:
 
+     <!-- markdownlint-disable MD058 -->
+
      | Option | Description                                                                                         |
      | ------ | --------------------------------------------------------------------------------------------------- |
      | A      | `<Option A description>`                                                                            |
@@ -168,6 +170,7 @@ Execution steps:
      | C      | `<Option C description>` (add D/E as needed up to 5)                                                |
      | Short  | Provide a different short answer (<=5 words) (Include only if free-form alternative is appropriate) |
 
+     <!-- markdownlint-enable MD058 -->
      - After the table, add: `You can reply with the option letter (e.g., "A"), accept the recommendation by saying "yes" or "recommended", or provide your own short answer.`
 
    - For short‑answer style (no meaningful discrete options):
