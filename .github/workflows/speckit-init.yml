@@ -117,7 +117,7 @@ jobs:
           && (inputs.version-md-file-to-write == null
           || steps.version-changed.outputs.changed == 'true')
         run: >
-          npx prettier --write './**/*.{md,json}'
+          npx -y prettier --write './**/*.{md,json}'
       - name: Normalize Markdown output
         if: >
           inputs.version-md-file-to-write == null
@@ -188,7 +188,7 @@ jobs:
           git ls-files -z -- '*.md' '*.markdown' \
             | xargs -0 -r npx -y markdownlint-cli2@0.23.2 --fix --config "${config_file}" --
           set -e
-          npx prettier --write './**/*.{md,json}'
+          npx -y prettier --write './**/*.{md,json}'
           git ls-files -z -- '*.md' '*.markdown' \
             | xargs -0 -r npx -y markdownlint-cli2@0.23.2 --fix --config "${config_file}" --
       - name: Disable shellcheck in Spec Kit shell scripts
