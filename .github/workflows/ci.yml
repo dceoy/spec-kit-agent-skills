@@ -35,9 +35,17 @@ jobs:
       version-md-file-to-write: VERSION.md
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  markdown-lint:
+    if: >
+      github.event_name == 'push' || github.event_name == 'pull_request'
+    uses: dceoy/gha-for-devops/.github/workflows/markdown-lint.yml@main  # zizmor: ignore[unpinned-uses]
+    with:
+      search-path: .
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    needs:
+      - markdown-lint
     permissions:
       contents: write
       pull-requests: write
