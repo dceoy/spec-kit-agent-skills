@@ -18,6 +18,31 @@ jobs:
           node-version: latest
       - name: Format generated Markdown
         run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          paths = (
+              Path(".cursor/skills/speckit-clarify/SKILL.md"),
+              Path(".github/agents/speckit.clarify.agent.md"),
+              Path(".opencode/commands/speckit.clarify.md"),
+              Path("skills/speckit-clarify/SKILL.md"),
+          )
+          for path in paths:
+              lines = path.read_text().splitlines()
+              if any("markdownlint-disable MD058" in line for line in lines):
+                  continue
+              for start, line in enumerate(lines):
+                  if "| Option | Description" not in line:
+                      continue
+                  indent = line[: len(line) - len(line.lstrip())]
+                  end = start
+                  while end + 1 < len(lines) and lines[end + 1].lstrip().startswith("|"):
+                      end += 1
+                  lines.insert(start, f"{indent}<!-- markdownlint-disable MD058 -->")
+                  lines.insert(end + 2, f"{indent}<!-- markdownlint-enable MD058 -->")
+                  break
+              path.write_text("\n".join(lines) + "\n")
+          PY
           npx -y prettier@3.9.6 --write \
             .cursor/skills/speckit-clarify/SKILL.md \
             .github/agents/speckit.clarify.agent.md \
@@ -34,6 +59,10 @@ jobs:
           fi
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -- '*.md'
+          git add -- \
+            .cursor/skills/speckit-clarify/SKILL.md \
+            .github/agents/speckit.clarify.agent.md \
+            .opencode/commands/speckit.clarify.md \
+            skills/speckit-clarify/SKILL.md
           git commit -m 'Format generated Markdown'
           git push
