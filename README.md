@@ -81,8 +81,6 @@ The main Spec-Driven Development flow in this repository is:
 
 Additional utilities include **Checklist** for requirements-quality checks and **Tasks to Issues** for converting generated tasks into GitHub issues.
 
-See [AGENTS.md](./AGENTS.md#spec-kit-workflow) for repository guidance.
-
 ### Visual workflow
 
 ```mermaid
@@ -162,8 +160,6 @@ Most Spec Kit-managed skills are tracked by the manifests in `.specify/integrati
 │   └── integration.json         # Current integration state
 ├── .vscode/
 │   └── settings.json            # Workspace settings
-├── AGENTS.md                    # Repository guidance
-├── CLAUDE.md -> AGENTS.md       # Claude Code guidance symlink
 └── VERSION.md                   # Tracked Spec Kit version
 ```
 
@@ -198,10 +194,6 @@ Install and authenticate only the runtime tools you intend to use, plus Spec Kit
 - If a skill fails, inspect its `SKILL.md` and verify the required Spec Kit project structure and prerequisites.
 - Run Spec Kit helper scripts from the repository root and prefer their structured output modes such as `--json` when available.
 - Do not restore legacy runtime layouts unless a currently supported Spec Kit integration starts generating them again.
-
-## Contributing
-
-See [AGENTS.md](./AGENTS.md) for repository guidelines and validation requirements.
 
 ## License
 
