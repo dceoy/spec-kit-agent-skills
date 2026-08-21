@@ -1,7 +1,7 @@
 {
   "integration": "agy",
-  "version": "0.16.4",
-  "installed_at": "2026-08-16T12:27:01.555704+00:00",
+  "version": "1.0.0",
+  "installed_at": "2026-08-21T19:44:52.615315+00:00",
   "files": {
     "skills/speckit-analyze/SKILL.md": "2e89ffed73764eb9d3ee2d9fba7e245a5e73229b809ddec52409ca74c44e585d",
     "skills/speckit-clarify/SKILL.md": "5e239a81711fb93b26a70f4384ee40461700d987245bda903c2966b4847d0e98",

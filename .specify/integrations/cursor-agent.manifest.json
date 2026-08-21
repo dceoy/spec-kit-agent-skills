@@ -1,7 +1,7 @@
 {
   "integration": "cursor-agent",
-  "version": "0.16.4",
-  "installed_at": "2026-08-16T12:27:01.924449+00:00",
+  "version": "1.0.0",
+  "installed_at": "2026-08-21T19:44:53.568792+00:00",
   "files": {
     ".cursor/skills/speckit-analyze/SKILL.md": "0b5d1d053de3d181cd5c4d9c307a273abf67fd4be0023e67e0c8082d73baa35b",
     ".cursor/skills/speckit-clarify/SKILL.md": "e1a1ddba9346721f41e7b8d0ad278b54d69399c0625db9d753756fd33e51a6e1",
